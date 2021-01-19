@@ -7,7 +7,9 @@ jobs:
     steps:
     - name: Setup
       run: |
+         brew install coreutils findutils gnu-tar gnu-sed gawk gnutls gnu-indent gnu-getopt grep
          curl -s https://raw.githubusercontent.com/SamarV-121/dotfiles/master/install.sh | bash
+         echo 'PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH"' >> ~/.zshrc
          sudo chsh -s /bin/zsh runner
 
     - name: SSH connection to Actions
