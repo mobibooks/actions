@@ -1,7 +1,5 @@
 name: SSH to GitHub Actions
-on:
-  schedule:
-    - cron: "* */6 * * *"
+on: workflow_dispatch
 
 jobs:
   ssh:
@@ -13,6 +11,8 @@ jobs:
          sudo chsh -s /bin/zsh runner
 
     - name: SSH connection to Actions
+      continue-on-error: true
+      timeout-minutes: 340          
       uses: P3TERX/ssh2actions@main
       with:
         mode: ngrok
@@ -22,4 +22,7 @@ jobs:
         SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
         TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
         TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT }}
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Trigger another workflow
+      run: |
+          curl -X POST --header "Authorization: token ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/workflows/main.yml/dispatches -d '{"ref":"master"}'
