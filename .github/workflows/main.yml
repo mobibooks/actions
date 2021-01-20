@@ -1,8 +1,8 @@
-name: SSH to GitHub Actions
+name: Actions
 on: workflow_dispatch
 
 jobs:
-  mac:
+  mac-ssh:
     runs-on: macos-latest
     steps:
     - name: Setup
@@ -27,9 +27,9 @@ jobs:
 
     - name: Trigger another workflow
       run: |
-          curl -X POST --header "Authorization: token ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/workflows/main.yml/dispatches -d '{"ref":"master"}'
+          curl -X POST --header "Authorization: token ${{ secrets.GH_TOKEN }}" https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/workflows/main.yml/dispatches -d '{"ref":"master"}'
 
-  ubuntu:
+  ubuntu-ssh:
     runs-on: ubuntu-20.04
     steps:
     - name: Cleanup space
@@ -52,3 +52,12 @@ jobs:
         SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
         TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
         TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT }}
+
+  tgbot:
+    runs-on: macos-latest
+    steps:
+    - name: Start
+      timeout-minutes: 340
+      run : |
+         git clone https://${{ secrets.GH_TOKEN }}@github.com/SamarV-121/BOT
+         cd BOT && bash start.sh &> /dev/null
