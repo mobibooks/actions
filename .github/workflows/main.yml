@@ -37,6 +37,7 @@ jobs:
 
     - name: Setup
       run: |
+         sudo apt-get -qq -y update
          sudo apt-get install zsh
          curl -s https://raw.githubusercontent.com/SamarV-121/dotfiles/master/install.sh | bash
          sudo chsh -s /usr/bin/zsh runner
