@@ -2,33 +2,6 @@ name: Actions
 on: workflow_dispatch
 
 jobs:
-  mac-ssh:
-    runs-on: macos-11.0
-    steps:
-    - name: Setup
-      run: |
-         brew install coreutils findutils gnu-tar gnu-sed gawk gnutls gnu-indent gnu-getopt grep
-         curl -s https://raw.githubusercontent.com/SamarV-121/dotfiles/master/install.sh | bash
-         echo 'PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH"' >> ~/.zshrc
-         sudo chsh -s /bin/zsh runner
-
-    - name: SSH connection to Actions
-      continue-on-error: true
-      timeout-minutes: 340          
-      uses: P3TERX/ssh2actions@main
-      with:
-        mode: ngrok
-      env:
-        NGROK_TOKEN: ${{ secrets.NGROK_TOKEN }}
-        NGROK_REGION: us
-        SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
-        TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
-        TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT }}
-
-    - name: Trigger another workflow
-      run: |
-          curl -X POST --header "Authorization: token ${{ secrets.GH_TOKEN }}" https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/workflows/main.yml/dispatches -d '{"ref":"master"}'
-
   ubuntu-ssh:
     runs-on: ubuntu-20.04
     steps:
@@ -43,6 +16,7 @@ jobs:
          sudo chsh -s /usr/bin/zsh runner
 
     - name: SSH connection to Actions
+      continue-on-error: true    
       timeout-minutes: 340    
       uses: P3TERX/ssh2actions@main
       with:
@@ -53,6 +27,10 @@ jobs:
         SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
         TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
         TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT }}
+
+    - name: Trigger another workflow
+      run: |
+          curl -X POST --header "Authorization: token ${{ secrets.GH_TOKEN }}" https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/workflows/main.yml/dispatches -d '{"ref":"master"}'
 
   tgbot:
     runs-on: macos-latest
