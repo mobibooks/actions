@@ -5,14 +5,10 @@ jobs:
   ubuntu-ssh:
     runs-on: ubuntu-20.04
     steps:
-    - name: Cleanup space
-      uses: rokibhasansagar/slimhub_actions@main
-
     - name: Setup
       run: |
          sudo apt-get -qq -y update
          sudo apt-get install zsh
-         curl -s https://raw.githubusercontent.com/SamarV-121/dotfiles/master/install.sh | bash
          sudo chsh -s /usr/bin/zsh runner
 
     - name: SSH connection to Actions
@@ -31,12 +27,3 @@ jobs:
     - name: Trigger another workflow
       run: |
           curl -X POST --header "Authorization: token ${{ secrets.GH_TOKEN }}" https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/workflows/main.yml/dispatches -d '{"ref":"master"}'
-
-  tgbot:
-    runs-on: macos-latest
-    steps:
-    - name: Start
-      timeout-minutes: 340
-      run : |
-         git clone https://${{ secrets.GH_TOKEN }}@github.com/SamarV-121/BOT
-         cd BOT && bash start.sh &> /dev/null
