@@ -5,11 +5,16 @@ jobs:
   ubuntu-ssh:
     runs-on: ubuntu-20.04
     steps:
+    steps:
+    - name: Cleanup space
+      uses: rokibhasansagar/slimhub_actions@main
+
     - name: Setup
       run: |
          sudo apt-get -qq -y update
          sudo apt-get install zsh
          sudo chsh -s /usr/bin/zsh runner
+         sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 
     - name: SSH connection to Actions
       continue-on-error: true    
