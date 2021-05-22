@@ -5,8 +5,8 @@ jobs:
   ubuntu-ssh:
     runs-on: ubuntu-20.04
     steps:
-    - name: Cleanup space
-      uses: rokibhasansagar/slimhub_actions@main
+    #- name: Cleanup space
+      #uses: rokibhasansagar/slimhub_actions@main
 
     - name: Setup
       run: |
